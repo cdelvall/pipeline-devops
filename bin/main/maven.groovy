@@ -1,4 +1,4 @@
-def call(){
+def call(stages){
     stage("Paso 1: Compliar"){
         sh "echo 'Compile Code!'"
         // Run Maven on a Unix agent.
