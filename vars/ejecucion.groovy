@@ -1,22 +1,20 @@
 def call(){
   pipeline {
-    agent any
-    environment {
-        NEXUS_USER         = credentials('NEXUS-USER')
-        NEXUS_PASSWORD     = credentials('NEXUS-PASS')
-    }
-    parameters {
-        choice(
-            name:'compileTool',
-            choices: ['Maven', 'Gradle'],
-            description: 'Seleccione herramienta de compilacion'
-        )
-    }
-    stages {
-        stage("Pipeline"){
-            steps {
-                script{
-                  if(params.compileTool == 'maven'){
+      agent any
+      environment {
+          NEXUS_USER         = credentials('NEXUS-USER')
+          NEXUS_PASSWORD     = credentials('NEXUS-PASS')
+      }
+      parameters {
+          choice choices: ['maven', 'gradle'], description: 'Seleccione una herramienta para preceder a compilar', name: 'compileTool'
+      }
+      stages {
+          stage("Pipeline"){
+              steps {
+                  script{
+                      sh "env"
+                      env.TAREA = ""
+                      if(params.compileTool == 'maven'){
                           //compilar maven
                           //def executor = load "maven.groovy"
                           //executor.call()
@@ -27,20 +25,18 @@ def call(){
                           //executor.call()
                         gradle.call()
                       }
-                    }
-                }
-            }
-            post{
-                success{
-                    slackSend color: 'good', message: "[Constanza Del Valle] [${JOB_NAME}] [${BUILD_TAG}] Ejecucion Exitosa", teamDomain: 'dipdevopsusac-tr94431', tokenCredentialId: 'token-jenkins-slack'
-                }
-                failure{
-                    slackSend color: 'danger', message: "[Constanza Del Valle] [${env.JOB_NAME}] [${BUILD_TAG}] Ejecucion fallida en stage [${env.TAREA}]", teamDomain: 'dipdevopsusac-tr94431', tokenCredentialId: 'token-jenkins-slack'
-                }
-            }
+                  }
+              }
+              post{
+          success{
+            slackSend color: 'good', message: "[cdelvalle] [${JOB_NAME}] [${BUILD_TAG}] Ejecucion Exitosa", teamDomain: 'dipdevopsusac-tr94431'
+          }
+          failure{
+            slackSend color: 'danger', message: "[cdelvalle] [${env.JOB_NAME}] [${BUILD_TAG}] Ejecucion fallida en stage [${env.TAREA}]", teamDomain: 'dipdevopsusac-tr94431'
+          }
         }
-    }
-}
+          }
+      }
   }
 }
 return this;
