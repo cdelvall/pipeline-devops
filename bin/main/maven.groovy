@@ -1,4 +1,5 @@
 def call(stages){
+    
     stage("Paso 1: Compliar"){
         sh "echo 'Compile Code!'"
         // Run Maven on a Unix agent.
@@ -30,5 +31,6 @@ def call(stages){
     stage("Paso 7: Test Alive Service - Testing Application!"){
         sh 'curl -X GET "http://localhost:8081/rest/mscovid/test?msg=testing"'
     }
+
 }
 return this;
